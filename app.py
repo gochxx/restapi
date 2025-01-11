@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from forecast import ForecastModel
 import logging
 from typing import Any, Dict, Tuple
@@ -8,6 +9,20 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 
 app = Flask(__name__)
+
+
+CORS(app) # alle Anfraen erlauben!
+#CORS(app, resources={r"/predict": {"origins": "http://webserver:80"}}) # für ausführen im Container!
+#CORS(app, resources={r"/predict": {"origins": "http://127.0.0.1:5500"}}) # Nur für lokale Ausführung
+#CORS(app, resources={r"/predict": {"origins": "http://192.168.178.26:5500"}}) # Nur für lokale Ausführung
+#CORS(app, resources={r"/predict": {"origins": "*"}})
+#CORS(app, resources={r"/predict": {"origins": "*"}})
+
+
+
+
+
+
 
 # Lade das Modell
 model = ForecastModel()
@@ -59,4 +74,5 @@ def predict() -> Tuple[Dict[str, Any], int]:
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    #app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
