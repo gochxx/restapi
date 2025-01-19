@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  flask-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+    #volumes:
+    #  - ./data:/app/data
+
+  frontend:
+    image: nginx:alpine
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    ports:
+      - "8001:80"
+    networks:
+      - app-network
+    depends_on:
+      - flask-app
+
+  proxy:
+    build: 
+      ./proxy
+    ports: 
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - flask-app
+
+networks:
+  app-network:
+    driver: bridge
